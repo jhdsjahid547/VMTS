@@ -20,6 +20,7 @@
                             <th>Sl.</th>
                             <th>Name</th>
                             <th>Email</th>
+                            <th>Status</th>
                             <th>Course</th>
                             <th>Action</th>
                         </tr>
@@ -60,6 +61,20 @@
                                             </div>
                                             <div class="col-9">
                                                 <select id="course_id" name="course_id" class="form-select" aria-label="Course select"></select>
+                                                <span id="course_idError" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row p-2">
+                                            <div class="col-3">
+                                                <span>Status</span>
+                                            </div>
+                                            <div class="col-9">
+                                                <select id="status" name="status" class="form-select" aria-label="Status select">
+                                                    <option id="default" value="" selected disabled>Select Status</option>
+                                                    <option id="active" value="1">Active</option>
+                                                    <option id="disable" value="0">Disable</option>
+                                                </select>
+                                                <span id="statusError" class="text-danger"></span>
                                             </div>
                                         </div>
                                         <div class="row p-2">
@@ -67,7 +82,7 @@
                                                 <span>Password</span>
                                             </div>
                                             <div class="col-9">
-                                                <input type="text" id="password" name="password" class="form-control" value="password" readonly/>
+                                                <input type="text" id="password" name="password" class="form-control" value="password"/>
                                             </div>
                                         </div>
                                         <div class="row p-2">
@@ -95,6 +110,16 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+        function showInvalid(msg) {
+            $.each(msg, function (key, value) {
+                $('#'+key+'Error').html(value);
+            });
+        }
+        function resetValidation() {
+            $('#nameError').html("");
+            $('#emailError').html("");
+            $('#course_idError').html("");
+        }
         const table = $('#studentList').DataTable({
             processing: true,
             serverSide: true,
@@ -103,6 +128,17 @@
                 { data: "DT_RowIndex" },
                 { data: "name" },
                 { data: "email" },
+                { data: "status",
+                    render: function(data){
+                        badge = "";
+                        if (data === "active") {
+                            badge = `<span class="badge badge-success">${data}</span>`;
+                        } else {
+                            badge = `<span class="badge badge-warning">${data}</span>`;
+                        }
+                        return badge;
+                    }
+                },
                 { data: "course",
                     render: function(data){
                     badge = "";
@@ -119,22 +155,24 @@
             order: [[0, "desc"]]
         });
         function add() {
+            $("#password").prop("readonly", true);
+            resetValidation();
             $.ajax({
                 type : "POST",
                 url: "{{ route('admin.show.info') }}",
                 data: "",
+                dataType: "json",
                 success: function (data) {
                     let selectCourse = $("#course_id");
                     selectCourse.empty();
                     let option = "";
-                    option += `<option value=" " disabled selected> -- Select Course -- </option>`;
+                    option += `<option value="" disabled selected> -- Select Course -- </option>`;
                     for (let course of data.course) {
                         option += `<option value="${course.id}">${course.name}</option>`;
                     }
                     selectCourse.append(option);
                 }
             });
-            /*resetValidation();*/
             $("#studentForm").trigger("reset");
             $("#createStudentLabel").html("Add New Student");
             $("#btnSave").html("Create");
@@ -142,7 +180,8 @@
             $("#id").val("");
         }
         function editFunc(id){
-            /*resetValidation();*/
+            resetValidation();
+            $("#password").removeAttr("readonly").val("");
             $.ajax({
                 type:"POST",
                 url: "{{ route('admin.show.info') }}",
@@ -168,6 +207,51 @@
                         }
                     }
                     selectCourse.append(option);
+                    if (data.student.status === 1) {
+                        $("#active").prop('selected','true');
+                    } else if (data.student.status === 0) {
+                        $("#disable").prop('selected','true');
+                    } else {
+                        $("#default").prop('selected','true');
+                    }
+                }
+            });
+        }
+        function deleteFunc(Id){
+            if (confirm("Delete Record?") == true) {
+                const id = Id;
+                $.ajax({
+                    type:"DELETE",
+                    url: "{{ route('admin.student.remove') }}",
+                    data: { id: id },
+                    dataType: "json",
+                    success: function(res){
+                        table.draw();
+                        toastr.warning(res.success, 'Alert');
+                    },
+                    error: function () {
+                        toastr.error('Something went wrong', 'System Alert!');
+                    }
+                });
+            }
+        }
+        function swapFunc(Id){
+            const id = Id;
+            $.ajax({
+                type:"POST",
+                url: "{{ route('admin.student.status') }}",
+                data: { id: id },
+                dataType: "json",
+                success: function(res){
+                    table.draw();
+                    if (res.success === "active") {
+                        toastr.success("Status change to "+res.success, 'Alert');
+                    } else {
+                        toastr.warning("Status change to "+res.success, 'Alert');
+                    }
+                },
+                error: function () {
+                    toastr.error('Something went wrong', 'System Alert!');
                 }
             });
         }
@@ -181,11 +265,23 @@
                 cache: false,
                 contentType: false,
                 processData: false,
+                dataType: "json",
                 success: (data) => {
-                    console.log(data)
+                    table.draw();
+                    $("#btnSave"). attr("disabled", false);
+                    if($.isEmptyObject(data.invalid)) {
+                        resetValidation();
+                        if($("#createStudentLabel").html() === "Edit Student")
+                        {
+                            $("#createStudent").modal("hide");
+                        }
+                        toastr.success(data.success, 'CONGRATULATION');
+                    }else {
+                        showInvalid(data.invalid);
+                    }
                 },
-                error: function (data) {
-                    console.log(data);
+                error: function () {
+                    toastr.error('Something went wrong', 'System Alert!');
                 }
             });
         });

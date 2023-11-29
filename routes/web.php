@@ -26,8 +26,11 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:admin
     Route::get('/dashboard', [AdminController::class, 'index'])->name('index');
     Route::resource('course', CourseController::class)->except(['show', 'edit', 'update']);
     Route::get('/student', [StudentController::class, 'index'])->name('student.list');
+    Route::get('/teacher', [StudentController::class, 'index'])->name('teacher.list');
     Route::post('/course-info', [StudentController::class, 'showData'])->name('show.info');
+    Route::post('/student-status', [StudentController::class, 'changeStatus'])->name('student.status');
     Route::post('/student-submit', [StudentController::class, 'submit'])->name('student.submit');
+    Route::delete('/student-remove', [StudentController::class, 'destroy'])->name('student.remove');
 });
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:creator', 'verified',])->name('creator.')->prefix('e')->group(function () {
    Route::get('/exam-panel', [CreatorController::class, 'index'])->name('index');

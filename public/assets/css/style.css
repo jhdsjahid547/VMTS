@@ -17,7 +17,7 @@ Project:	Jampack
 	++Border++
 	++Colors++
 	++Shadow++
-	++Font Size++	
+	++Font Size++
 	++Font Weight++
 	++Text Case++
 	++Letter Spacing++
@@ -70,7 +70,7 @@ Project:	Jampack
 	++Apex Chart++
 	++charts++
 	++Nestable++
-	++Treeview++	
+	++Treeview++
 	++Modals++
 	++Close++
 	++Sweet-alert++
@@ -78,7 +78,7 @@ Project:	Jampack
 	++Toast++
 	++Bootstrap Notify++
 	++Tooltop++
-	++Images++  
+	++Images++
 	++Icons++
     ++Carousel++
 	++Twitter slider++
@@ -119,30 +119,20 @@ Project:	Jampack
 	++Authantication Pages++
 	++Fixed Footer++
 
-++++ Componets Import ++++	
+++++ Componets Import ++++
 -------------------------------------------------------------------*/
 /****************************/
 /** Imports **/
 /****************************/
 @import url(https://fonts.googleapis.com/icon?family=DM+Sans:400,500,700&display=swap||Material+Icons);
-@import url(../../vendors/bootstrap/dist/css/bootstrap.min.css);
+@import url(../bootstrap/css/bootstrap.min.css);
 @import url(font-awesome.min.css);
-@import url(dripicons.css);
 @import url(cryptofont.min.css);
-@import url(themify-icons.css);
 @import url(animate.css);
-@import url(flag-icon.min.css);
-@import url(twemoji.min.css);
 @import url(material-design-iconic-font.min.css);
-@import url(remixicon.css);
 @import url(material-icons.css);
-@import url(line-awesome.min.css);
 @import url(bootstrap-icons.css);
-@import url(flaticon.css);
-@import url(prism.css);
-@import url(../../vendors/simplebar/dist/simplebar.min.css);
-@import url(../../vendors/owl.carousel/dist/assets/owl.carousel.min.css);
-@import url(../../vendors/owl.carousel/dist/assets/owl.theme.default.min.css);
+@import url(simplebar.min.css);
 /*__________________________________________________________________;
 [Mixin]
 Project:	Jampack

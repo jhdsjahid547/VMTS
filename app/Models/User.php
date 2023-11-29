@@ -61,24 +61,58 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    public static $student;
-    public $aaa, $bbb;
+    public static $student, $message;
+
+    public static function status($request)
+    {
+        self::$student = User::find($request->id);
+        if (self::$student->status == 1){
+            self::$student->status = 0;
+            self::$message = 'disable';
+        } else {
+            self::$student->status = 1;
+            self::$message = 'active';
+        }
+        self::$student->save();
+        return self::$message;
+    }
     public static function studentCreate($request)
     {
         self::$student = new User();
         self::$student->assignRole('subscriber');
         self::$student->name = $request->name;
         self::$student->email = $request->email;
-        self::$student->password = bcrypt($request->password);
+        self::$student->password = bcrypt('password');
+        self::$student->status = $request->status;
         self::$student->save();
         return self::$student->id;
     }
-
+    public static function teacherCreate($request)
+    {
+        self::$student = new User();
+        self::$student->assignRole('creator');
+        self::$student->name = $request->name;
+        self::$student->email = $request->email;
+        self::$student->password = bcrypt('password');
+        self::$student->status = $request->status;
+        self::$student->save();
+        return self::$student->id;
+    }
+    public static function updateUser($request)
+    {
+        self::$student = User::find($request->id);
+        self::$student->name = $request->name;
+        self::$student->email = $request->email;
+        if($request->password) {
+            self::$student->password = bcrypt($request->password);
+        }
+        self::$student->status = $request->status;
+        self::$student->save();
+    }
     public function subj()
     {
         return $this->hasOne(AssignCourse::class);
     }
-
     public function topic()
     {
         return $this->belongsToMany(Course::class, 'assign_courses');

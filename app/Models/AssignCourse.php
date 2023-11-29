@@ -18,6 +18,13 @@ class AssignCourse extends Model
         self::$assignCourse->save();
     }
 
+    public static function updateUserCourse($request)
+    {
+        self::$assignCourse = AssignCourse::where('user_id', $request->id)->first();
+        self::$assignCourse->course_id = $request->course_id;
+        self::$assignCourse->save();
+    }
+
     public function topic()
     {
         return $this->belongsTo(Course::class);

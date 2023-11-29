@@ -18,7 +18,6 @@
     <link href="{{ asset('/') }}assets/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css" rel="stylesheet" type="text/css" />
 
     <!-- CSS -->
-    <link href="{{ asset('/') }}assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="{{ asset('/') }}assets/css/style.css" rel="stylesheet" type="text/css">
     <link href="{{ asset('/') }}assets/css/toastr.min.css" rel="stylesheet" type="text/css">
 </head>
