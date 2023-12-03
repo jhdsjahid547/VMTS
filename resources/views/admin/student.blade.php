@@ -194,22 +194,22 @@
                     $("#createStudentLabel").html("Edit Student");
                     $("#btnSave").html("Update");
                     $('#createStudent').modal("show");
-                    $("#id").val(data.student.id);
-                    $("#name").val(data.student.name);
-                    $("#email").val(data.student.email);
+                    $("#id").val(data.user.id);
+                    $("#name").val(data.user.name);
+                    $("#email").val(data.user.email);
                     for (let course of data.course) {
-                        if(data.student.subj === null) {
+                        if(data.user.subj === null) {
                             option += `<option value="${course.id}">${course.name}</option>`;
-                        } else if(course.id === data.student.subj.course_id) {
+                        } else if(course.id === data.user.subj.course_id) {
                             option += `<option value="${course.id}" selected>${course.name}</option>`;
                         } else {
                             option += `<option value="${course.id}">${course.name}</option>`;
                         }
                     }
                     selectCourse.append(option);
-                    if (data.student.status === 1) {
+                    if (data.user.status === 1) {
                         $("#active").prop('selected','true');
-                    } else if (data.student.status === 0) {
+                    } else if (data.user.status === 0) {
                         $("#disable").prop('selected','true');
                     } else {
                         $("#default").prop('selected','true');
@@ -222,7 +222,7 @@
                 const id = Id;
                 $.ajax({
                     type:"DELETE",
-                    url: "{{ route('admin.student.remove') }}",
+                    url: "{{ route('admin.user.remove') }}",
                     data: { id: id },
                     dataType: "json",
                     success: function(res){
@@ -239,7 +239,7 @@
             const id = Id;
             $.ajax({
                 type:"POST",
-                url: "{{ route('admin.student.status') }}",
+                url: "{{ route('admin.user.status') }}",
                 data: { id: id },
                 dataType: "json",
                 success: function(res){
@@ -280,8 +280,8 @@
                         showInvalid(data.invalid);
                     }
                 },
-                error: function () {
-                    toastr.error('Something went wrong', 'System Alert!');
+                error: function (data) {
+                    toastr.error(data.error, 'System Alert!');
                 }
             });
         });

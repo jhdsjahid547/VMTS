@@ -10,7 +10,7 @@ class AssignCourse extends Model
     use HasFactory;
 
     public static $assignCourse;
-    public static function studentCourse($request, $user_id)
+    public static function userCourse($request, $user_id)
     {
         self::$assignCourse = new AssignCourse();
         self::$assignCourse->course_id = $request->course_id;

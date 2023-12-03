@@ -6,7 +6,12 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CreatorController;
 use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SettingController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,11 +31,17 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:admin
     Route::get('/dashboard', [AdminController::class, 'index'])->name('index');
     Route::resource('course', CourseController::class)->except(['show', 'edit', 'update']);
     Route::get('/student', [StudentController::class, 'index'])->name('student.list');
-    Route::get('/teacher', [StudentController::class, 'index'])->name('teacher.list');
-    Route::post('/course-info', [StudentController::class, 'showData'])->name('show.info');
-    Route::post('/student-status', [StudentController::class, 'changeStatus'])->name('student.status');
-    Route::post('/student-submit', [StudentController::class, 'submit'])->name('student.submit');
-    Route::delete('/student-remove', [StudentController::class, 'destroy'])->name('student.remove');
+    Route::get('/teacher', [TeacherController::class, 'index'])->name('teacher.list');
+    Route::post('/course-info', [UserController::class, 'showData'])->name('show.info');
+    Route::post('/user-status', [UserController::class, 'changeStatus'])->name('user.status');
+    Route::post('/submit-student', [UserController::class, 'submit'])->name('student.submit');
+    Route::post('/submit-teacher', [UserController::class, 'submit'])->name('teacher.submit');
+    Route::delete('/user-remove', [UserController::class, 'destroy'])->name('user.remove');
+    Route::get('/setting', [SettingController::class, 'index'])->name('setting');
+    Route::post('/setting/create', [SettingController::class, 'create'])->name('setting.create');
+    Route::post('/setting/{id}', [SettingController::class, 'update'])->name('setting.update');
+    Route::get('/setting/list', [SettingController::class, 'list'])->name('setting.list');
+    Route::post('/setting/value', [SettingController::class, 'settingValue'])->name('setting.value');
 });
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:creator', 'verified',])->name('creator.')->prefix('e')->group(function () {
    Route::get('/exam-panel', [CreatorController::class, 'index'])->name('index');
@@ -38,5 +49,11 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:creat
 });
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:subscriber', 'verified',])->name('subscriber.')->prefix('v')->group(function () {
     Route::get('/available-exams', [SubscriberController::class, 'index'])->name('index');
+});
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->prefix('user')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'profile'])->name('user.profile');
+    Route::post('/profile/{id}', [ProfileController::class, 'submit'])->name('user.profile.update');
+    Route::get('/change-password', [ProfileController::class, 'changePassword'])->name('user.password.change');
+    Route::post('/update-password', [ProfileController::class, 'updatePassword'])->name('user.password.update');
 });
 

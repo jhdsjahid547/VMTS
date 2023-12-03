@@ -1,15 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
+
 use App\Models\User;
-class StudentController extends Controller
+use Illuminate\Http\Request;
+
+class TeacherController extends Controller
 {
     public function index(Request $request)
     {
-        /*trim(str_replace('/o/','',$request->getPathInfo()))*/
         if($request->ajax()) {
-            return datatables()->of(User::role('subscriber')->get())
+            return datatables()->of(User::role('creator')->get())
                 ->addColumn('action', 'admin.action')
                 ->rawColumns(['action'])
                 ->addIndexColumn()
@@ -29,6 +30,6 @@ class StudentController extends Controller
                 })
                 ->make(true);
         }
-        return view('admin.student');
+        return view('admin.teacher');
     }
 }

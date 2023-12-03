@@ -81,14 +81,14 @@
     });
     function showInvalid(msg) {
         $.each(msg, function (key, value) {
-            $('#'+key+'Error').html(value);
+            $("#"+key+"Error").html(value);
         });
     }
     function resetValidation() {
         $('#nameError').html("");
         $('#codeError').html("");
     }
-    const table = $('#courseList').DataTable({
+    const table = $("#courseList").DataTable({
         processing: true,
         serverSide: true,
         ajax: "{{ route('admin.course.index') }}",
@@ -162,13 +162,13 @@
                 if($.isEmptyObject(data.invalid)) {
                     resetValidation()
                     $("#createCourse").modal("hide");
-                    toastr.success(data.success, 'CONGRATULATION');
+                    toastr.success(data.success, "CONGRATULATION");
                 }else {
                     showInvalid(data.invalid);
                 }
             },
             error: function () {
-                toastr.error('Something went wrong', 'System Alert!');
+                toastr.error("Something went wrong", "System Alert!");
             }
         });
     });
