@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\CreatorController;
+/*use App\Http\Controllers\CreatorController;*/
 use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\UserController;
@@ -11,6 +11,8 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\ExamController;
+use App\Http\Controllers\ManageExamController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,8 +47,16 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:admin
     Route::delete('/setting/delete/property/{id}', [SettingController::class, 'propertyDestroy'])->name('setting.property.delete');
 });
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:creator', 'verified',])->name('creator.')->prefix('e')->group(function () {
-   Route::get('/exam-panel', [CreatorController::class, 'index'])->name('index');
-
+   Route::get('/exam-panel', [ExamController::class, 'index'])->name('index');
+   Route::post('/exam-submit', [ExamController::class, 'examSubmit'])->name('exam.submit');
+   Route::get('/exam-manage/{id}', [ExamController::class, 'manage'])->name('exam.manage');
+   Route::post('/exam-activity/{id}', [ExamController::class, 'examActivity'])->name('exam.activity');
+   Route::delete('/exam-delete/{id}', [ExamController::class, 'distroy'])->name('exam.distroy');
+   Route::patch('/exam-update/{id}', [ManageExamController::class, 'update'])->name('exam.update');
+   Route::post('/question-submit', [ManageExamController::class, 'createQuestion'])->name('question.submit');
+   Route::get('/question-show/{id}', [ManageExamController::class, 'showUpdateQuestion'])->name('question.show');
+   Route::get('/question-set/{id}', [ManageExamController::class, 'questionSet'])->name('question.set');
+   Route::delete('/question-delete/{id}', [ManageExamController::class, 'distroy'])->name('question.distroy');
 });
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:subscriber', 'verified',])->name('subscriber.')->prefix('v')->group(function () {
     Route::get('/available-exams', [SubscriberController::class, 'index'])->name('index');

@@ -55,7 +55,7 @@ class SettingController extends Controller
     public function settingPropertyCreate(Request $request)
     {
         $this->validCheck = Validator::make($request->all(), [
-            'value' => 'min:3',
+            'value' => 'min:2',
         ]);
         if ($this->validCheck->passes()) {
             if ($request->setting == 'update') {

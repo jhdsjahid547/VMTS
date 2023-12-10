@@ -16,7 +16,7 @@ class CourseController extends Controller
     {
         if($request->ajax()) {
             return datatables()->of(Course::all())
-                ->addColumn('action', 'admin.action')
+                ->addColumn('action', 'action')
                 ->rawColumns(['action'])
                 ->addIndexColumn()
                 ->make(true);

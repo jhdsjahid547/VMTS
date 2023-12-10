@@ -157,12 +157,12 @@
             contentType: false,
             processData: false,
             success: (data) => {
-                table.draw();
                 $("#btnSave"). attr("disabled", false);
                 if($.isEmptyObject(data.invalid)) {
-                    resetValidation()
-                    $("#createCourse").modal("hide");
                     toastr.success(data.success, "CONGRATULATION");
+                    $("#createCourse").modal("hide");
+                    resetValidation()
+                    table.draw();
                 }else {
                     showInvalid(data.invalid);
                 }

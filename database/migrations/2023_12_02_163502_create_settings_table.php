@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->default(NULL);
+            $table->string('title')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });

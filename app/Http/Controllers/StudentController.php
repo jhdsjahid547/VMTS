@@ -10,7 +10,7 @@ class StudentController extends Controller
         /*trim(str_replace('/o/','',$request->getPathInfo()))*/
         if($request->ajax()) {
             return datatables()->of(User::role('subscriber')->get())
-                ->addColumn('action', 'admin.action')
+                ->addColumn('action', 'action')
                 ->rawColumns(['action'])
                 ->addIndexColumn()
                 ->editColumn('status', function ($user) {

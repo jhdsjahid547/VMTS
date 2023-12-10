@@ -11,7 +11,7 @@ class TeacherController extends Controller
     {
         if($request->ajax()) {
             return datatables()->of(User::role('creator')->get())
-                ->addColumn('action', 'admin.action')
+                ->addColumn('action', 'action')
                 ->rawColumns(['action'])
                 ->addIndexColumn()
                 ->editColumn('status', function ($user) {

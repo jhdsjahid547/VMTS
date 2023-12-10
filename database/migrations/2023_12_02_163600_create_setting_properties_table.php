@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('setting_properties', function (Blueprint $table) {
             $table->id();
             $table->integer('setting_id');
-            $table->string('value')->default(NULL);
+            $table->string('value')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });

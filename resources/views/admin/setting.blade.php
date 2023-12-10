@@ -140,7 +140,7 @@
                                     <button onclick="editValue(${response.success.id})" class="editValue${response.success.id} btn btn-outline-warning btn-sm fa fa-edit"></button>
                                     <button onclick="addValue(this.className, ${response.success.id})" class="addValue${response.success.id} d-none btn btn-outline-warning btn-sm fa fa-marker"></button>
                                     <button onclick="resetTableBtn(${response.success.id}, '${response.success.value}')" class="resetTableBtn${response.success.id} d-none btn btn-outline-info btn-sm fa fa-redo"></button>
-                                    <button onclick="deleteValue(this.id, ${response.success.id})" id="deleteValue${response.success.id}" class="btn btn-outline-danger fa fa-trash btn-sm"></button>
+                                    <button onclick="deleteValue(this, ${response.success.id})" id="deleteValue${response.success.id}" class="btn btn-outline-danger fa fa-trash btn-sm"></button>
                                 </td>
                             </tr>
                         `);

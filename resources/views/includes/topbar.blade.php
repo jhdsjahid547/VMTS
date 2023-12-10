@@ -60,7 +60,7 @@
                             <div class="dropdown-divider"></div>
                             <h6 class="dropdown-header">Manage Account</h6>
                             <a class="dropdown-item" href="{{ route('user.profile') }}"><span class="dropdown-icon feather-icon"><i data-feather="check-square"></i></span><span>Profile</span></a>
-                            <a class="dropdown-item" href="{{ route('admin.setting') }}"><span class="dropdown-icon feather-icon"><i data-feather="settings"></i></span><span>Settings</span></a>
+                            @role('admin')<a class="dropdown-item" href="{{ route('admin.setting') }}"><span class="dropdown-icon feather-icon"><i data-feather="settings"></i></span><span>Settings</span></a>@endrole
                             <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logoutForm').submit();"><span class="dropdown-icon feather-icon"><i data-feather="credit-card"></i></span><span>Logout</span></a>
                             <form action="{{ route('auth.logout') }}" method="post" id="logoutForm">@csrf</form>
                         </div>

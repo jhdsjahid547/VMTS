@@ -14,8 +14,9 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 
     <!-- Data Table CSS -->
-    <link href="{{ asset('/') }}assets/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('/') }}assets/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('/') }}assets/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
+{{--<link href="assets/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css" rel="stylesheet" type="text/css" />--}}
 
     <!-- CSS -->
     <link href="{{ asset('/') }}assets/css/style.css" rel="stylesheet" type="text/css">
