@@ -8,7 +8,11 @@
         </div>
         <!-- /Page Header -->
         <!-- Page Body -->
+        @if($user->status == 1)
         @yield('body')
+        @else
+            <h3 class="text-danger text-center">You're under activation process please wait..</h3>
+        @endif
         <!-- /Page Body -->
     </div>
 </section>

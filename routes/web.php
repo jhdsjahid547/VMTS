@@ -13,6 +13,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\ManageExamController;
+use App\Http\Controllers\AvailableExamController;
+use App\Http\Controllers\ResultController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +31,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
+Route::get('/test', [SubscriberController::class, 'index'])->name('test');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:admin', 'verified',])->name('admin.')->prefix('o')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('index');
     Route::resource('course', CourseController::class)->except(['show', 'edit', 'update']);
@@ -59,7 +62,10 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:creat
    Route::delete('/question-delete/{id}', [ManageExamController::class, 'distroy'])->name('question.distroy');
 });
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:subscriber', 'verified',])->name('subscriber.')->prefix('v')->group(function () {
-    Route::get('/available-exams', [SubscriberController::class, 'index'])->name('index');
+    Route::get('/available-exams', [AvailableExamController::class, 'index'])->name('index');
+    Route::get('/exam-take/{id}', [AvailableExamController::class, 'take'])->name('exam.take');
+    Route::post('/exam-submit/{id}', [AvailableExamController::class, 'submit'])->name('exam.submit');
+    Route::get('/result-show/{id}', [ResultController::class, 'showResult'])->name('result.show');
 });
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->prefix('user')->group(function () {
     Route::get('/profile', [ProfileController::class, 'profile'])->name('user.profile');

@@ -13,8 +13,16 @@ use Illuminate\Support\Facades\Validator;
 
 class ExamController extends Controller
 {
-    public $exam, $courses, $timeLimits, $negativeMarks, $validCheck, $row;
+    public $exam, $courses, $timeLimits, $negativeMarks, $validCheck, $row, $passRates;
 
+    public function settingProperty($id)
+    {
+        return SettingProperty::where('setting_id', $id)->pluck('id')->toArray();
+    }
+    public function settings($id)
+    {
+        return Setting::find($id)->property;
+    }
     public function index(Request $request)
     {
         if($request->ajax()) {
@@ -31,25 +39,25 @@ class ExamController extends Controller
                 ->editColumn('time_limit_id', function ($exam) {
                     return $exam->timeLimit->value.' Minute';
                 })
+                ->editColumn('pass_mark_id', function ($exam) {
+                    return $exam->passingRate->value.'%';
+                })
                 ->make(true);
         }
-        $this->courses = Course::all();
-        $this->timeLimits = Setting::find(1)->property;
-        $this->negativeMarks = Setting::find(2)->property;
         return view('creator.index', [
-            'courses' => $this->courses,
-            'timeLimits' => $this->timeLimits,
-            'negativeMarks' => $this->negativeMarks,
+            'courses' => Course::all(),
+            'timeLimits' => $this->settings(1),
+            'negativeMarks' => $this->settings(2),
+            'passRates' => $this->settings(3),
         ]);
     }
     public function examSubmit(Request $request)
     {
-        $this->timeLimits = SettingProperty::where('setting_id',1)->pluck('id')->toArray();
-        $this->negativeMarks = SettingProperty::where('setting_id',2)->pluck('id')->toArray();
         $this->validCheck = Validator::make($request->all(), [
             'course' => 'required|exists:courses,id',
-            'time_limit' => 'required|in:'.implode(",", $this->timeLimits),
-            'negative_mark' => 'required|in:'.implode(",", $this->negativeMarks),
+            'time_limit' => 'required|in:'.implode(",", $this->settingProperty(1)),
+            'negative_mark' => 'required|in:'.implode(",", $this->settingProperty(2)),
+            'passing_rate' => 'required|in:'.implode(",", $this->settingProperty(3)),
             'title' => 'required|min:3',
             'question_limit' => 'required',
         ]);
@@ -61,23 +69,26 @@ class ExamController extends Controller
     }
     public function manage($id)
     {
-        $this->exam = Exam::find($id);
-        $this->courses = Course::all();
-        $this->timeLimits = Setting::find(1)->property;
-        $this->negativeMarks = Setting::find(2)->property;
         $this->row = ExamQuestion::where('exam_id', $id)->get();
         return view('creator.manage-exam', [
-            'exam' => $this->exam,
-            'courses' => $this->courses,
-            'timeLimits' => $this->timeLimits,
-            'negativeMarks' => $this->negativeMarks,
+            'exam' => Exam::find($id),
+            'courses' => Course::all(),
+            'timeLimits' => $this->settings(1),
+            'negativeMarks' => $this->settings(2),
+            'passRates' => $this->settings(3),
             'count' => $this->row->count()
         ]);
     }
     public function examActivity($id)
     {
-        $this->respo = Exam::activity($id);
-        return response()->json(['success' => $this->respo]);
+        $this->exam = Exam::where([['id', $id], ['user_id', Auth::id()]])->first('question_limit');
+        $this->questions = ExamQuestion::where([['exam_id', $id], ['user_id', Auth::id()]])->count();
+        if($this->exam->question_limit != $this->questions){
+            return response()->json(['success' => 'Disable. Before Start Fill Extra '.$this->exam->question_limit-$this->questions.' Question']);
+        } else {
+            $this->respo = Exam::activity($id);
+            return response()->json(['success' => $this->respo]);
+        }
     }
     public function distroy($id)
     {

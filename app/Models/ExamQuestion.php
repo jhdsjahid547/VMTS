@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class ExamQuestion extends Model
 {
@@ -13,15 +14,17 @@ class ExamQuestion extends Model
     public static function createQuestion($request)
     {
         self::$question = new ExamQuestion();
-        self::$question->exam_id = $request->id;
+        self::$question->user_id = Auth::id();
+        self::$question->exam_id = $request->exam_id;
         self::extracted($request);
     }
     public static function updateQuestion($request)
     {
         self::$question = ExamQuestion::where([
             ['id', $request->question_id],
-            ['exam_id', $request->id]
-        ])->first();;
+            ['user_id',Auth::id()],
+            ['exam_id', $request->exam_id]
+        ])->first();
         self::extracted($request);
     }
 
@@ -38,5 +41,14 @@ class ExamQuestion extends Model
         self::$question->choice_four = $request->choice_four;
         self::$question->correct_answer = $request->correct_answer;
         self::$question->save();
+    }
+
+    public function answer()
+    {
+        return $this->hasMany(ExamAnswer::class, 'answer', 'correct_answer');
+    }
+    public function solution()
+    {
+        return $this->hasOne(ExamAnswer::class);
     }
 }

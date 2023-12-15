@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->tinyInteger('status')->default('1')->after('profile_photo_path');
+        Schema::create('exam_attempts', function (Blueprint $table) {
+            $table->id();
+            $table->integer('user_id');
+            $table->integer('exam_id');
+            $table->tinyInteger('status');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('status');
-        });
+        Schema::dropIfExists('exam_attempts');
     }
 };

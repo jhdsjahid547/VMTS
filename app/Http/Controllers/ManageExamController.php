@@ -6,20 +6,26 @@ use App\Models\Exam;
 use App\Models\ExamQuestion;
 use App\Models\SettingProperty;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
+use App\Rules\Uncommon;
 
 class ManageExamController extends Controller
 {
-    public $timeLimits, $negativeMarks, $validCheck, $questions;
+    public $validCheck, $questions, $exam;
+
+    public function settingProperty($id)
+    {
+        return SettingProperty::where('setting_id', $id)->pluck('id')->toArray();
+    }
     public function update(Request $request, $id)
     {
-        $this->timeLimits = SettingProperty::where('setting_id',1)->pluck('id')->toArray();
-        $this->negativeMarks = SettingProperty::where('setting_id',2)->pluck('id')->toArray();
         $this->validCheck = Validator::make($request->all(), [
             'course' => 'required|exists:courses,id',
-            'time_limit' => 'required|in:'.implode(",", $this->timeLimits),
-            'negative_mark' => 'required|in:'.implode(",", $this->negativeMarks),
+            'time_limit' => 'required|in:'.implode(",", $this->settingProperty(1)),
+            'negative_mark' => 'required|in:'.implode(",", $this->settingProperty(2)),
+            'passing_rate' => 'required|in:'.implode(",", $this->settingProperty(3)),
             'title' => 'required|min:3',
             'question_limit' => 'required',
         ]);
@@ -33,8 +39,8 @@ class ManageExamController extends Controller
     public function createQuestion(Request $request)
     {
         $this->validCheck = Validator::make($request->all(), [
-            'id' => 'required|exists:exams,id',
-            'question' => 'required|min:2|unique:exam_questions,exam_id,'.$request->id,
+            'exam_id' => 'required|exists:exams,id',
+            'question' => ['required', new Uncommon()],
             'choice_one' => 'required|different:choice_two|different:choice_three|different:choice_four',
             'choice_two' => 'required|different:choice_one|different:choice_three|different:choice_four',
             'choice_three' => 'required|different:choice_one|different:choice_two|different:choice_four',
@@ -51,8 +57,14 @@ class ManageExamController extends Controller
                 ExamQuestion::updateQuestion($request);
                 return response()->json(['success' => 'Successfully question updated']);
             } else {
-                ExamQuestion::createQuestion($request);
-                return response()->json(['cr' => true, 'success' => 'Successfully question created']);
+                $this->exam = Exam::where([['id', $request->exam_id], ['user_id', Auth::id()]])->first('question_limit');
+                $this->questions = ExamQuestion::where([['exam_id', $request->exam_id], ['user_id', Auth::id()]])->count();
+                if($this->exam->question_limit == $this->questions){
+                    return response()->json(['success' => 'Limit Reached!']);
+                } else {
+                    ExamQuestion::createQuestion($request);
+                    return response()->json(['cr' => true, 'success' => 'Successfully question created']);
+                }
             }
         }
         return response()->json(['invalid' => $this->validCheck->errors()]);

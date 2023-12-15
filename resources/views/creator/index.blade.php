@@ -22,6 +22,7 @@
                             <th>Course Name</th>
                             <th>Negative Mark</th>
                             <th>Time Limit</th>
+                            <th>Passing Rate</th>
                             <th>Question Limit</th>
                             <th>Action</th>
                         </tr>
@@ -67,9 +68,9 @@
                                             </div>
                                             <div class="col-9">
                                                 <select name="time_limit" id="time-limit" class="form-select" aria-label="Time limit select">
-                                                    <option selected disabled>Select Time(in minute)</option>
+                                                    <option selected disabled>Select Time</option>
                                                     @foreach($timeLimits as $timeLimit)
-                                                        <option value="{{ $timeLimit->id }}">{{ $timeLimit->value }}</option>
+                                                        <option value="{{ $timeLimit->id }}">{{ $timeLimit->value }} Minute</option>
                                                     @endforeach
                                                 </select>
                                                 <span id="time_limitError" class="text-danger"></span>
@@ -86,6 +87,20 @@
                                                     @endforeach
                                                 </select>
                                                 <span id="negative_markError" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row p-2">
+                                            <div class="col-3">
+                                                <label for="passing-rate">Passing Rate</label>
+                                            </div>
+                                            <div class="col-9">
+                                                <select name="passing_rate" id="passing-rate" class="form-select" aria-label="passing rate select">
+                                                    <option selected disabled>Select Passing Rate</option>
+                                                    @foreach($passRates as $rate)
+                                                        <option value="{{ $rate->id }}">{{ $rate->value }}%</option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="passing_rateError" class="text-danger"></span>
                                             </div>
                                         </div>
                                         <div class="row p-2">
@@ -177,6 +192,7 @@
                 { data: "course_id" },
                 { data: "negative_mark_id" },
                 { data: "time_limit_id" },
+                { data: "pass_mark_id" },
                 { data: "question_limit" },
                 { data: "action" },
             ],

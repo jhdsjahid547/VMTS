@@ -61,12 +61,14 @@
                         </a>
                     </li>
                     @endrole
+                    @role('creator')
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('creator.index') }}">
                             <i class="fa fa-newspaper fs-5 px-2"></i>
                             <span class="nav-link-text">Exam Module</span>
                         </a>
                     </li>
+                    @endrole
                     <li class="nav-item">
                         <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#dash_task">
                             <i class="fa fa-user-cog fs-5 px-2"></i>

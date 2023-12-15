@@ -67,6 +67,19 @@
                                 </div>
                                 <div class="row p-2">
                                     <div class="col-12">
+                                        <label for="passing-rate">Passing Rate</label>
+                                    </div>
+                                    <div class="col-12">
+                                        <select name="passing_rate" id="passing-rate" class="form-select" aria-label="passing rate select">
+                                            @foreach($passRates as $rate)
+                                                <option value="{{ $rate->id }}" {{ $rate->id == $exam->pass_mark_id ? 'selected' : '' }}>{{ $rate->value }}%</option>
+                                            @endforeach
+                                        </select>
+                                        <span id="passing_rateError" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row p-2">
+                                    <div class="col-12">
                                         <label for="question-limit">Question Limit</label>
                                     </div>
                                     <div class="col-12">
@@ -124,7 +137,7 @@
                                             <form action="javascript:void(0)" id="questionForm" method="post">
                                                <div class="row">
                                                    <div class="col-md-12">
-                                                       <input type="hidden" name="id" id="examId" value="{{ $exam->id }}">
+                                                       <input type="hidden" name="exam_id" id="examId" value="{{ $exam->id }}">
                                                        <input type="hidden" name="question_id" id="question-id">
                                                        <div class="row p-2">
                                                            <div class="col-12">
@@ -299,13 +312,14 @@
         }
         $("#addQuestion").on("click", function () {
             removeError();
+            $("#question-id").removeAttr("value");
             $("#questionForm").trigger("reset");
             $("#questionAction").modal("show");
         });
         function updateQuestion(id) {
+            removeError();
             let url = "{{ route('creator.question.show', ':id') }}";
             url = url.replace(":id", id);
-            $("#questionForm").trigger("reset");
             $.ajax({
                 type:"GET",
                 contentType: "application/json",
@@ -319,6 +333,7 @@
                 success: function(response){
                     let one = $("#option-one"), two = $("#option-two"), three = $("#option-three") , four = $("#option-four");
                     $("#questionAction").modal("show");
+                    $("#questionForm").trigger("reset");
                     $("#question-name").val(response.question);
                     $("#question-id").val(response.id);
                     $("#choice-one").val(response.choice_one);
@@ -399,6 +414,8 @@
                         toastr.success(response.success, "CONGRATULATION");
                         if (Object.hasOwn(response, "cr")) {
                             count.text(parseInt(count.text())+1);
+                        } else {
+                            $("#questionAction").modal("hide");
                         }
                     }else {
                         $.each(response.invalid, function (key, value) {

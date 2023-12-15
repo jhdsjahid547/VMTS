@@ -15,13 +15,7 @@ class Exam extends Model
     {
         self::$exam = new Exam();
         self::$exam->user_id = Auth::id();
-        self::$exam->course_id = $request->course;
-        self::$exam->time_limit_id = $request->time_limit;
-        self::$exam->negative_mark_id = $request->negative_mark;
-        self::$exam->title = $request->title;
-        self::$exam->question_limit = $request->question_limit;
-        self::$exam->description = $request->description;
-        self::$exam->save();
+        self::extracted($request);
     }
     public static function updateExam($request, $id)
     {
@@ -29,13 +23,7 @@ class Exam extends Model
             ['id', $id],
             ['user_id', Auth::id()]
         ])->first();
-        self::$exam->course_id = $request->course;
-        self::$exam->time_limit_id = $request->time_limit;
-        self::$exam->negative_mark_id = $request->negative_mark;
-        self::$exam->title = $request->title;
-        self::$exam->question_limit = $request->question_limit;
-        self::$exam->description = $request->description;
-        self::$exam->save();
+        self::extracted($request);
     }
     public static function activity($id)
     {
@@ -51,6 +39,22 @@ class Exam extends Model
         return self::$message;
     }
 
+    /**
+     * @param $request
+     * @return void
+     */
+    public static function extracted($request): void
+    {
+        self::$exam->course_id = $request->course;
+        self::$exam->time_limit_id = $request->time_limit;
+        self::$exam->negative_mark_id = $request->negative_mark;
+        self::$exam->title = $request->title;
+        self::$exam->question_limit = $request->question_limit;
+        self::$exam->pass_mark_id = $request->passing_rate;
+        self::$exam->description = $request->description;
+        self::$exam->save();
+    }
+
     public function course()
     {
         return $this->belongsTo(Course::class);
@@ -62,5 +66,17 @@ class Exam extends Model
     public function timeLimit()
     {
         return $this->belongsTo(SettingProperty::class, 'time_limit_id');
+    }
+    public function passingRate()
+    {
+        return $this->belongsTo(SettingProperty::class, 'pass_mark_id');
+    }
+    public function attempt()
+    {
+        return $this->hasMany(ExamAttempt::class);
+    }
+    public function singleAttempt()
+    {
+        return $this->hasOne(ExamAttempt::class);
     }
 }
