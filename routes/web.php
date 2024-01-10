@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
-/*use App\Http\Controllers\CreatorController;*/
+use App\Http\Controllers\CreatorController;
 use App\Http\Controllers\SubscriberController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\UserController;
@@ -15,6 +15,7 @@ use App\Http\Controllers\ExamController;
 use App\Http\Controllers\ManageExamController;
 use App\Http\Controllers\AvailableExamController;
 use App\Http\Controllers\ResultController;
+use App\Http\Controllers\ManageResultController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,7 +32,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
-Route::get('/test', [SubscriberController::class, 'index'])->name('test');
+/*Route::get('/test', [SubscriberController::class, 'index'])->name('test');*/
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:admin', 'verified',])->name('admin.')->prefix('o')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('index');
     Route::resource('course', CourseController::class)->except(['show', 'edit', 'update']);
@@ -60,12 +61,19 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:creat
    Route::get('/question-show/{id}', [ManageExamController::class, 'showUpdateQuestion'])->name('question.show');
    Route::get('/question-set/{id}', [ManageExamController::class, 'questionSet'])->name('question.set');
    Route::delete('/question-delete/{id}', [ManageExamController::class, 'distroy'])->name('question.distroy');
+   Route::get('/exam-result-list', [ManageResultController::class, 'examlist'])->name('exam.list');
+   Route::patch('/result-publish/{id}', [ManageResultController::class, 'publish'])->name('exam.publish');
+   Route::get('/show-rank/{id}', [ManageResultController::class, 'rank'])->name('exam.rank');
+   Route::get('/manage-notice', [CreatorController::class, 'notice'])->name('notice');
 });
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:subscriber', 'verified',])->name('subscriber.')->prefix('v')->group(function () {
     Route::get('/available-exams', [AvailableExamController::class, 'index'])->name('index');
     Route::get('/exam-take/{id}', [AvailableExamController::class, 'take'])->name('exam.take');
     Route::post('/exam-submit/{id}', [AvailableExamController::class, 'submit'])->name('exam.submit');
     Route::get('/result-show/{id}', [ResultController::class, 'showResult'])->name('result.show');
+    Route::get('/question-solution/{id}', [ResultController::class, 'questionSet'])->name('question.set');
+    Route::get('/previous-exam-result', [ResultController::class, 'previousResult'])->name('previous.result');
+    Route::get('/recent-notice', [SubscriberController::class, 'notice'])->name('notice');
 });
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->prefix('user')->group(function () {
     Route::get('/profile', [ProfileController::class, 'profile'])->name('user.profile');

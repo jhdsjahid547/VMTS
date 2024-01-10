@@ -22,4 +22,13 @@ class ExamAttempt extends Model
         self::$attempt->status = $status;
         self::$attempt->save();
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function exam()
+    {
+        return $this->belongsTo(Exam::class);
+    }
 }

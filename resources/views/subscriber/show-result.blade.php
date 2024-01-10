@@ -4,6 +4,7 @@
 @section('body')
     <section class="pt-2">
         <div class="container-fluid">
+            <input id="routeUrl" type="hidden" value="{{ $result->exam_id }}">
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
@@ -55,7 +56,7 @@
                             <div class="card bg-gradient-sunset text-white">
                                 <div class="card-body">
                                     <h5 class="mb-4">In Percentage</h5>
-                                    <i class="fa fa-calculator fa-2x mb-2">&nbsp;{{ $final = ($result->result/$exam->question_limit)*100 }}%</i>
+                                    <i class="fa fa-calculator fa-2x mb-2">&nbsp;{{ $final = number_format($result->result/$exam->question_limit*100, 2) }}%</i>
                                 </div>
                             </div>
                         </div>
@@ -97,6 +98,7 @@
                                 <thead>
                                 <tr>
                                     <th>Your Answer's</th>
+                                </tr>
                                 </thead>
                                 <tbody>
                                 @forelse($questions as $question)
@@ -141,15 +143,6 @@
                                         @endif
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <b>#.1 gsdsf</b><br>
-                                        <span class="pl-4 text-success">A - </span><br>
-                                        <span class="pl-4 text-success">B -</span><br>
-                                        <span class="pl-4 text-success">C - </span><br>
-                                        <span class="pl-4 text-success">D - </span><br>
-                                    </td>
-                                </tr>
                                 @empty
                                     <tr>
                                         <td>No answer found.</td>
@@ -162,43 +155,27 @@
                 </div>
             </div>
                 <!--all solution -->
-        <table id="second" class="table table-borderless table-striped table-hover display">
-            <thead>
-            <tr>
-                <th>All Question and Answer</th>
-            </thead>
-            <tbody>
-            <tr>
-                <td>
-                    <b>#.1 gsdsf</b><br>
-                    <span class="pl-4 text-success">A - </span><br>
-                    <span class="pl-4">A - </span><br>
-                    <span class="pl-4 text-success">B -</span><br>
-                    <span class="pl-4">B - </span><br>
-                    <span class="pl-4 text-success">C - </span><br>
-                    <span class="pl-4">C - </span><br>
-                    <span class="pl-4 text-success">D - </span><br>
-                    <span class="pl-4">D - </span><br>
-                </td>
-            </tr>
-            <tr>
-                <td>No Course Found</td>
-            </tr>
-            </tbody>
-            <tfoot>
-            <tr>
-                <th>All Question and Answer</th>
-            </tr>
-            </tfoot>
-        </table>
-        <h4 class="text-primary">No question found...</h4>
-        </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-body">
+                        <table id="answer-sheet" class="table table-borderless table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th>All Question and Answer</th>
+                        </tr>
+                        </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
             <div id="footer-fix"></div>
         </div>
     </section>
 @endsection
 @section('script')
     <script type="text/javascript">
+        let url = "{{ route('subscriber.question.set', ':id') }}";
+        url = url.replace(":id", $("#routeUrl").val());
         $('#user-answer').DataTable({
             "dom": 'frtip',
             info: false,
@@ -208,6 +185,25 @@
             responsive: true,
             scrollCollapse: true,
             scrollY: '430px'
+        });
+        $('#answer-sheet').DataTable( {
+            dom: 'Bfrtip',
+            searching: false,
+            "info": false,
+            serverSide: true,
+            processing: true,
+            ajax: url,
+            columns: [
+                { data: "questions",
+                    render: function(data, type, row){
+                        let question = `<b>${row['DT_RowIndex']}.&nbsp;${data.question}</b><br>`;
+                        $.each(data.choice, function (key, value) {
+                            question += `<span class="pl-4 ${value === data.correct ? "text-success" : ""}">${key}&nbsp;-&nbsp;${value}&nbsp;${value === data.correct ? "~correct" : ""}</span><br>`;
+                        });
+                        return question;
+                    }
+                },
+            ],
         });
     </script>
 @endsection

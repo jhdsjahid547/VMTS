@@ -33,12 +33,27 @@ class Exam extends Model
             self::$message = 'disable';
         } else {
             self::$exam->status = 1;
+            if (self::$exam->activity == 0) {
+                self::$exam->activity = 1;
+            }
             self::$message = 'active';
         }
         self::$exam->save();
         return self::$message;
     }
-
+    public static function resultPublish($id)
+    {
+        self::$exam = Exam::find($id);
+        if (self::$exam->publish == 1){
+            self::$exam->publish = 0;
+            self::$message = 'unpublished';
+        } else {
+            self::$exam->publish = 1;
+            self::$message = 'published';
+        }
+        self::$exam->save();
+        return self::$message;
+    }
     /**
      * @param $request
      * @return void

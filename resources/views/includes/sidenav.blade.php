@@ -68,6 +68,38 @@
                             <span class="nav-link-text">Exam Module</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('creator.exam.list') }}">
+                            <i class="fa fa-chart-bar fs-5 px-2"></i>
+                            <span class="nav-link-text">Result Module</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('creator.notice') }}">
+                            <i class="fa fa-bell fs-5 px-2"></i>
+                            <span class="nav-link-text">Notice Module</span>
+                        </a>
+                    </li>
+                    @endrole
+                    @role('subscriber')
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('subscriber.index') }}">
+                            <i class="fa fa-newspaper fs-5 px-2"></i>
+                            <span class="nav-link-text">Available Exams</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('subscriber.previous.result') }}">
+                            <i class="fa fa-chart-line fs-5 px-2"></i>
+                            <span class="nav-link-text">Previous Results</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('subscriber.notice') }}">
+                            <i class="fa fa-bell fs-5 px-2"></i>
+                            <span class="nav-link-text">Notification</span>
+                        </a>
+                    </li>
                     @endrole
                     <li class="nav-item">
                         <a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#dash_task">

@@ -16,10 +16,13 @@
                 <a class="btn btn-gradient-warning btn-sm px-2 fa fa-edit" onclick="updateQuestion({{ $id }})" href="javascript:void(0)">&nbsp;Update</a>
                 <a class="btn btn-gradient-danger btn-sm px-2 fa fa-trash" onclick="deleteQuestion({{ $id }})" href="javascript:void(0)">&nbsp;Delete</a>
             </div>
-        @else
+        @elseif(request()->routeIs('creator.index'))
             <a class="btn btn-outline-secondary fa fa-file-signature p-2 rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Add Or Edit Question" href="{{ route('creator.exam.manage', $id) }}"></a>
             <a class="btn btn-outline-primary fa {{ $status == 1 ? 'fa-spinner fa-spin' : 'fa-stopwatch' }} p-2 rounded-circle" onclick="swap({{ $id }})" data-bs-toggle="tooltip" data-bs-placement="top" title="Start Or End Exam" href="javascript:void(0)"></a>
             <a class="btn btn-outline-danger fa fa-trash p-2 rounded-circle" onclick="distroy({{ $id }})" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Exam" href="javascript:void(0)"></a>
+        @elseif(request()->routeIs('creator.exam.list'))
+            <a class="btn fa {{ $publish == 1 ? 'fa-file-export' : 'fa-file-import' }}" onclick="publish({{ $id }})" data-bs-toggle="tooltip" data-bs-placement="top" title="Publish Result" href="javascript:void(0)"></a>
+            <a class="btn fa fa-map" data-bs-toggle="tooltip" data-bs-placement="top" title="Show Rank" href="{{ route('creator.exam.rank', $id) }}"></a>
         @endif
     </div>
 </div>
