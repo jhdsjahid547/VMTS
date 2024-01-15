@@ -21,6 +21,7 @@
     <!-- CSS -->
     <link href="{{ asset('/') }}assets/css/style.css" rel="stylesheet" type="text/css">
     <link href="{{ asset('/') }}assets/css/toastr.min.css" rel="stylesheet" type="text/css">
+    @yield('style')
 </head>
 <body>
 <!-- Wrapper -->

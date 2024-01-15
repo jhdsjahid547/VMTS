@@ -4,6 +4,7 @@
 @section('body')
     <section class="pt-2">
         <div class="container-fluid">
+            @if(!empty($result->exam_id))
             <input id="routeUrl" type="hidden" value="{{ $result->exam_id }}">
             <div class="row">
                 <div class="col-md-6">
@@ -168,6 +169,13 @@
                     </div>
                 </div>
             </div>
+            @else
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3 class="text-center text-danger">No answer submitted!</h3>
+                    </div>
+                </div>
+            @endif
             <div id="footer-fix"></div>
         </div>
     </section>

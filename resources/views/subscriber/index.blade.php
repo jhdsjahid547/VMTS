@@ -7,7 +7,7 @@
             <div class="row">
                 @forelse($exams as $exam)
                 <div class="col-6 col-lg-4 p-2">
-                    <a href="{{ empty($exam->singleAttempt->exam_id) ? route('subscriber.exam.take', $exam->id)  : route('subscriber.result.show', $exam->id) }}"> <!-- Change route based on condition-->
+                    <a class="confirmation" href="{{ empty($exam->singleAttempt->exam_id) ? route('subscriber.exam.take', $exam->id)  : route('subscriber.result.show', $exam->id) }}"> <!-- Change route based on condition-->
                         <div class="card h-100 border-4 {{ empty($exam->singleAttempt->exam_id) ? 'border-primary' : 'border-success' }}">
                             <div class="card-header">
                                 <h5>{{ Str()->of($exam->title)->limit(25) }}</h5>
@@ -40,5 +40,11 @@
 /*        $(".result").on("click", function () {
             alert($(this).val());
         });*/
+    $('.confirmation').on('click', function () {
+        /*sessionStorage.removeItem("store_reload");*/
+        if((this).href.includes('exam-take')){
+            return confirm("-Once exam start\n-Do not go back & reload page.\n-If page reload paper will be 'auto blank submit'.\n-Time out also 'auto submit'.");
+        }
+    });
     </script>
 @endsection

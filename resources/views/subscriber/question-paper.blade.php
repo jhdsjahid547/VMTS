@@ -6,11 +6,44 @@
 @section('head')
     {{ $exam->title }}
 @endsection
+@section('style')
+    <style>
+        .option {
+            display:block;
+            padding:5px 5px 5px 30px;
+            position:relative
+        }
+        .option .option-input {
+            display:none
+        }
+        .option .set-value {
+            border:1px solid #d63e2d;
+            color:#d63e2d;
+            width:25px;
+            height:25px;
+            position:absolute;
+            overflow:hidden;
+            line-height:1;
+            text-align:center;
+            border-radius:100%;
+            font-size:10pt;
+            left:0;
+            top:50%;
+            padding-top:5px;
+            margin-top:-10px
+        }
+        .option-input:checked+.set-value {
+            background:#000;
+            border-color:#000;
+            color:#000
+        }
+    </style>
+@endsection
 @section('body')
 @if (empty($exam->singleAttempt->exam_id))
     <section class="pt-2">
         <div class="container-fluid">
-            <div class="row sticky-top border border-danger">
+            <div class="row sticky-top border border-danger bg-white">
                 <div class="col-6">
                     <form name="cd">
                         <input type="hidden" name="" id="timeExamLimit" value="{{ $exam->timeLimit->value }}">
@@ -103,11 +136,16 @@
 @endsection
 @section('script')
     <script type="text/javascript">
+        if (sessionStorage.getItem("store_reload")) alert('Reload Attempted!');
+        sessionStorage.setItem("store_reload", true);
+        function disableF5(e) { if ((e.which || e.keyCode) == 116 || (e.which || e.keyCode) == 82) e.preventDefault(); }
+        $(document).ready(function(){
+            $(document).on("keydown", disableF5);
+        });
         $("#answerForm :input[type=radio]").on("click", function() {
             $(this).closest(".mcq").attr("id", $(this).attr("id"));
             $('div[id^="choice-"] :radio:not(:checked)').attr("disabled", !0);
         });
-
         var timer2 = $("#timeExamLimit").val()+":01";
         var interval = setInterval(function() {
             var timer = timer2.split(":");
@@ -124,10 +162,11 @@
             timer2 = minutes + ":" + seconds;
             if (minutes == 0 && seconds == 1) {
                 $("#answerForm").submit();
-                window.location.replace("/v/available-exams");
             }
         }, 1000);
-
+        $(window).blur(function() {
+            $("#answerForm").submit();
+        });
         $("#answerForm").on("submit", function (e) {
             e.preventDefault();
             const formData = new FormData(this);
@@ -144,6 +183,8 @@
                 },
                 success: function (response) {
                     console.log(response);
+                    sessionStorage.removeItem("store_reload");
+                    window.location.replace("/msc-vmts/public/v/available-exams");
                 },
                 error: function (response) {
                     console.log(response);
