@@ -23,5 +23,8 @@ class AppServiceProvider extends ServiceProvider
         View::composer('master', function ($view){
             $view->with('user', Auth::user());
         });
+        View::composer('master', function ($view){
+            $view->with('notification', Auth::user()->unreadNotifications()->count());
+        });
     }
 }

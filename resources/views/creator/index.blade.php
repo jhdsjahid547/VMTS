@@ -41,6 +41,15 @@
                                     <form action="javascript:void(0)" id="panelForm" method="post">
                                         <div class="row p-2">
                                             <div class="col-3">
+                                                <label for="global">For All</label>
+                                            </div>
+                                            <div class="col-9">
+                                                <input type="checkbox" name="global" id="global" value="1" class="form-check"/>
+                                                <span id="titleError" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row p-2">
+                                            <div class="col-3">
                                                 <label for="title">Exam Title</label>
                                             </div>
                                             <div class="col-9">
@@ -149,9 +158,19 @@
             panelForm.trigger("reset");
             $("#createPanel").modal("show");
         }
+        function copy(url) {
+            navigator.clipboard.writeText(url)
+                .then(() => {
+                    toastr.success("Link Copied!", "System Alert!");
+                })
+                .catch(() => {
+                    toastr.error("Failed to Copy", "System Alert!");
+                });
+        }
         //Submit form
         $(panelForm).on("submit", function (e) {
             e.preventDefault();
+            let url = "{{ route('creator.exam.manage', ':id') }}";
             const formData = new FormData(this);
             $.ajax({
                 type: "POST",
@@ -168,7 +187,8 @@
                     $(panelForm).trigger("reset");
                     if($.isEmptyObject(response.invalid)) {
                         toastr.success(response.success, "CONGRATULATION");
-                        table.draw();
+                        window.location.replace(url.replace(":id", response.id));
+                        //table.draw();
                     }else {
                         $.each(response.invalid, function (key, value) {
                             $("#"+key+"Error").html(value);

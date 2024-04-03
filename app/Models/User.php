@@ -13,6 +13,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
+
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
@@ -61,8 +62,20 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    public static $student, $message;
+    public static $user, $student, $message;
 
+    public static function registerUser($request)
+    {
+        self::$user = new User();
+        self::$user->assignRole($request->role);
+        self::$user->name = $request->name;
+        self::$user->mobile = $request->mobile;
+        self::$user->email = $request->email;
+        self::$user->password = bcrypt($request->password);
+        self::$user->status = 0;
+        self::$user->save();
+        return self::$user->id;
+    }
     public static function status($request)
     {
         self::$student = User::find($request->id);

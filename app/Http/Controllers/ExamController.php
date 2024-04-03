@@ -54,6 +54,7 @@ class ExamController extends Controller
     public function examSubmit(Request $request)
     {
         $this->validCheck = Validator::make($request->all(), [
+            'global' => 'boolean',
             'course' => 'required|exists:courses,id',
             'time_limit' => 'required|in:'.implode(",", $this->settingProperty(1)),
             'negative_mark' => 'required|in:'.implode(",", $this->settingProperty(2)),
@@ -62,8 +63,8 @@ class ExamController extends Controller
             'question_limit' => 'required',
         ]);
         if($this->validCheck->passes()) {
-            Exam::createExam($request);
-            return response()->json(['success' => 'Successfully exam panel created']);
+            $this->exam = Exam::createExam($request);
+            return response()->json(['id' => $this->exam, 'success' => 'Successfully exam panel created']);
         }
         return response()->json(['invalid' => $this->validCheck->errors()]);
     }

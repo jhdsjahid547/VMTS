@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-12">
             @role('creator')
-            <!--student-->
+            <!--teacher-->
             <div class="row display-1 text-center px-6 bg-light">
                 <div class="col-3 border border-secondary rounded-4"><a class="fa fa-newspaper" href="{{ route('creator.index') }}"></a></div>
                 <div class="col-3 border border-primary rounded-4"><a class="fa fa-chart-bar" href="{{ route('creator.exam.list') }}"></a></div>
@@ -16,13 +16,22 @@
                     </ul>
                 </div>
             </div>
-            <!--/student <i class="fa-regular fa-users-medical"></i>-->
+            <!--/teacher <i class="fa-regular fa-users-medical"></i>-->
             @else
-            <!--teacher-->
+            <!--student-->
             <div class="row display-2 text-center px-6 bg-light rounded-4">
                 <div class="col-3 border border-secondary rounded-4"><a class="fa fa-newspaper" href="{{ route('subscriber.index') }}"></a></div>
                 <div class="col-3 border border-primary rounded-4"><a class="fa fa-chart-line" href="{{ route('subscriber.previous.result') }}"></a></div>
-                <div class="col-3 border border-secondary rounded-4"><a class="fa fa-bell" href="{{ route('subscriber.notice') }}"></a></div>
+                <div class="col-3 border border-secondary rounded-4"><a class="fa fa-bell" href="{{ route('subscriber.notice') }}">
+                        @if($notification > 99)
+                            <span class="position-absolute top-0 translate-middle badge badge-sm rounded-pill bg-danger">99+</span>
+                        @elseif($notification == 0)
+                            <!--empty-->
+                        @else
+                            <span class="position-absolute top-0 translate-middle badge badge-sm rounded-pill bg-danger">{{ $notification }}</span>
+                        @endif
+                    </a>
+                </div>
                 <div class="col-3 border border-primary rounded-4">
                     <a class="fa fa-user-cog" data-bs-toggle="dropdown"></a>
                     <ul class="dropdown-menu">
@@ -32,7 +41,7 @@
                     </ul>
                 </div>
             </div>
-            <!--/teacher-->
+            <!--/student-->
             @endrole
         </div>
     </div>

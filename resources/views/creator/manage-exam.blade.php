@@ -16,6 +16,15 @@
                         <div class="card-body">
                             <form action="{{ route('creator.exam.update', $exam->id) }}" id="panelForm" method="post">
                                 <div class="row p-2">
+                                    <div class="col-3">
+                                        <label for="global">For All</label>
+                                    </div>
+                                    <div class="col-9">
+                                        <input type="checkbox" name="global" id="global" value="1" class="form-check" {{ $exam->global == 1 ? 'checked' : '' }}/>
+                                        <span id="titleError" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row p-2">
                                     <div class="col-12">
                                         <label for="title">Exam Title</label>
                                     </div>

@@ -16,6 +16,7 @@ class Exam extends Model
         self::$exam = new Exam();
         self::$exam->user_id = Auth::id();
         self::extracted($request);
+        return self::$exam->id;
     }
     public static function updateExam($request, $id)
     {
@@ -67,6 +68,11 @@ class Exam extends Model
         self::$exam->question_limit = $request->question_limit;
         self::$exam->pass_mark_id = $request->passing_rate;
         self::$exam->description = $request->description;
+        if ($request->has('global')) {
+            self::$exam->global = 1;
+        } else {
+            self::$exam->global = 0;
+        }
         self::$exam->save();
     }
 

@@ -1,6 +1,7 @@
 <?php
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AccessController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CreatorController;
@@ -16,6 +17,7 @@ use App\Http\Controllers\ManageExamController;
 use App\Http\Controllers\AvailableExamController;
 use App\Http\Controllers\ResultController;
 use App\Http\Controllers\ManageResultController;
+use App\Http\Controllers\GlobalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,10 +29,12 @@ use App\Http\Controllers\ManageResultController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [AccessController::class, 'index'])->name('front.index');
+Route::post('/register', [AccessController::class, 'register'])->name('register');
+Route::get('/open/exam-take/{id}', [GlobalController::class, 'showExam'])->name('global.exam');
+Route::post('/get-user-name/{id}', [GlobalController::class, 'getName'])->name('examiner.name');
+Route::post('/start-exam/{id}', [GlobalController::class, 'start'])->name('exam.start');
+Route::post('/exam-submit/{id}', [GlobalController::class, 'submit'])->name('exam.submit');
 Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 /*Route::get('/test', [SubscriberController::class, 'index'])->name('test');*/
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:admin', 'verified',])->name('admin.')->prefix('o')->group(function () {
@@ -65,6 +69,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:creat
    Route::patch('/result-publish/{id}', [ManageResultController::class, 'publish'])->name('exam.publish');
    Route::get('/show-rank/{id}', [ManageResultController::class, 'rank'])->name('exam.rank');
    Route::get('/manage-notice', [CreatorController::class, 'notice'])->name('notice');
+   Route::post('/send-notice', [CreatorController::class, 'sendNotification'])->name('send.notice');
+   Route::delete('/remove-notice-file/{id}', [CreatorController::class, 'removeFile'])->name('remove.file');
+
 });
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:subscriber', 'verified',])->name('subscriber.')->prefix('v')->group(function () {
     Route::get('/available-exams', [AvailableExamController::class, 'index'])->name('index');
@@ -74,6 +81,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:subsc
     Route::get('/question-solution/{id}', [ResultController::class, 'questionSet'])->name('question.set');
     Route::get('/previous-exam-result', [ResultController::class, 'previousResult'])->name('previous.result');
     Route::get('/recent-notice', [SubscriberController::class, 'notice'])->name('notice');
+    Route::get('/mark-as-read/{id}', [SubscriberController::class, 'markAsRead'])->name('markasread');
+    Route::get('/mark-all-as-read', [SubscriberController::class, 'markAllAsRead'])->name('markallasread');
 });
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->prefix('user')->group(function () {
     Route::get('/profile', [ProfileController::class, 'profile'])->name('user.profile');

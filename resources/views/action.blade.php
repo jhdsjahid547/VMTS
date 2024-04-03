@@ -17,7 +17,8 @@
                 <a class="btn btn-gradient-danger btn-sm px-2 fa fa-trash" onclick="deleteQuestion({{ $id }})" href="javascript:void(0)">&nbsp;Delete</a>
             </div>
         @elseif(request()->routeIs('creator.index'))
-            <a class="btn btn-outline-secondary fa fa-file-signature p-2 rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Add Or Edit Question" href="{{ route('creator.exam.manage', $id) }}"></a>
+            <button type="button" class="btn btn-outline-secondary fa fa-copy p-2 rounded-circle global" onclick="copy('{{ $global == 1 ? route('global.exam', $id) : route('subscriber.exam.take', $id) }}')" data-bs-toggle="tooltip" data-bs-placement="top" title="Copy"></button>
+            <a class="btn btn-outline-warning fa fa-file-signature p-2 rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" title="Add Or Edit Question" href="{{ route('creator.exam.manage', $id) }}"></a>
             <a class="btn btn-outline-primary fa {{ $status == 1 ? 'fa-spinner fa-spin' : 'fa-stopwatch' }} p-2 rounded-circle" onclick="swap({{ $id }})" data-bs-toggle="tooltip" data-bs-placement="top" title="Start Or End Exam" href="javascript:void(0)"></a>
             <a class="btn btn-outline-danger fa fa-trash p-2 rounded-circle" onclick="distroy({{ $id }})" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Exam" href="javascript:void(0)"></a>
         @elseif(request()->routeIs('creator.exam.list'))

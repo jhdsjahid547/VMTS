@@ -98,6 +98,13 @@
                         <a class="nav-link" href="{{ route('subscriber.notice') }}">
                             <i class="fa fa-bell fs-5 px-2"></i>
                             <span class="nav-link-text">Notification</span>
+                            @if($notification > 99)
+                                <span class="badge badge-soft-danger ms-2">99+</span>
+                            @elseif($notification == 0)
+                                <!--empty-->
+                            @else
+                                <span class="badge badge-soft-danger ms-2">{{ $notification }}</span>
+                            @endif
                         </a>
                     </li>
                     @endrole
