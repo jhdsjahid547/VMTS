@@ -223,7 +223,7 @@
             <footer class="container-xxl footer">
                 <div class="row">
                     <div class="col-xl-8">
-                        <p class="footer-text"><span class="copy-text">Jahid © 2022 All rights reserved.</span></p>
+                        <p class="footer-text"><span class="copy-text">Jahid © {{ date('Y') }} All rights reserved.</span></p>
                     </div>
                 </div>
             </footer>

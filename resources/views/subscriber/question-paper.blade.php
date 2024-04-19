@@ -136,20 +136,22 @@
 @endsection
 @section('script')
     <script type="text/javascript">
+        //Disable Reload page
         if (sessionStorage.getItem("store_reload")) alert('Reload Attempted!');
         sessionStorage.setItem("store_reload", true);
         function disableF5(e) { if ((e.which || e.keyCode) == 116 || (e.which || e.keyCode) == 82) e.preventDefault(); }
         $(document).ready(function(){
             $(document).on("keydown", disableF5);
         });
+        //Prevent switch options
         $("#answerForm :input[type=radio]").on("click", function() {
             $(this).closest(".mcq").attr("id", $(this).attr("id"));
             $('div[id^="choice-"] :radio:not(:checked)').attr("disabled", !0);
         });
+        //Ticking time
         var timer2 = $("#timeExamLimit").val()+":01";
         var interval = setInterval(function() {
             var timer = timer2.split(":");
-            //by parsing integer, I avoid all extra string processing
             var minutes = parseInt(timer[0], 10);
             var seconds = parseInt(timer[1], 10);
             --seconds;
@@ -164,9 +166,11 @@
                 $("#answerForm").submit();
             }
         }, 1000);
+        //Window sswitch to auto submit
         $(window).blur(function() {
             $("#answerForm").submit();
         });
+        //Responsible for submit question form
         $("#answerForm").on("submit", function (e) {
             e.preventDefault();
             const formData = new FormData(this);
@@ -184,7 +188,7 @@
                 success: function (response) {
                     console.log(response);
                     sessionStorage.removeItem("store_reload");
-                    window.location.replace("/msc-vmts/public/v/available-exams");
+                    window.location.replace("/public/v/available-exams");
                 },
                 error: function (response) {
                     console.log(response);

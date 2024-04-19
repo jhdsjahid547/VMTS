@@ -23,7 +23,7 @@ class CreatorController extends Controller
     public function sendNotification(Request $request)
     {
         $this->validCheck = Validator::make($request->all(), [
-            'message' => 'required|min:5|max:50',
+            'message' => 'required|min:5',
             'attach' => 'mimes:pdf,jpeg,jpg,png|mimetypes:application/pdf,image/jpeg,image/png|max:2560'
         ]);
         if($this->validCheck->passes()) {

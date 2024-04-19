@@ -48,7 +48,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'role:admin
     Route::post('/submit-teacher', [UserController::class, 'submit'])->name('teacher.submit');
     Route::delete('/user-remove', [UserController::class, 'destroy'])->name('user.remove');
     Route::get('/setting', [SettingController::class, 'index'])->name('setting');
-/*  Route::post('/setting/create', [SettingController::class, 'create'])->name('setting.create');
+/*    Route::post('/setting/create', [SettingController::class, 'create'])->name('setting.create');
     Route::get('/setting/list', [SettingController::class, 'list'])->name('setting.list');*/
     Route::post('/setting/{id}', [SettingController::class, 'update'])->name('setting.update');
     Route::post('/setting/create/value', [SettingController::class, 'settingPropertyCreate'])->name('setting.property.create');

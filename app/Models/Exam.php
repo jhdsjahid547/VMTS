@@ -73,6 +73,11 @@ class Exam extends Model
         } else {
             self::$exam->global = 0;
         }
+        if ($request->has('publish')) {
+            self::$exam->publish = 1;
+        } else {
+            self::$exam->publish = 0;
+        }
         self::$exam->save();
     }
 

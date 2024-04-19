@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AssignCourse;
 use App\Models\Course;
 use App\Models\Exam;
 use App\Models\ExamQuestion;
@@ -46,6 +47,7 @@ class ExamController extends Controller
         }
         return view('creator.index', [
             'courses' => Course::all(),
+            'userCourseId' => AssignCourse::where('user_id', Auth::id())->first()->course_id,
             'timeLimits' => $this->settings(1),
             'negativeMarks' => $this->settings(2),
             'passRates' => $this->settings(3),
@@ -55,7 +57,8 @@ class ExamController extends Controller
     {
         $this->validCheck = Validator::make($request->all(), [
             'global' => 'boolean',
-            'course' => 'required|exists:courses,id',
+            'publish' => 'boolean',
+            'course' => 'required|exists:courses,id|in:'.AssignCourse::where('user_id', Auth::id())->first()->course_id,
             'time_limit' => 'required|in:'.implode(",", $this->settingProperty(1)),
             'negative_mark' => 'required|in:'.implode(",", $this->settingProperty(2)),
             'passing_rate' => 'required|in:'.implode(",", $this->settingProperty(3)),
@@ -74,6 +77,7 @@ class ExamController extends Controller
         return view('creator.manage-exam', [
             'exam' => Exam::find($id),
             'courses' => Course::all(),
+            'userCourseId' => AssignCourse::where('user_id', Auth::id())->first()->course_id,
             'timeLimits' => $this->settings(1),
             'negativeMarks' => $this->settings(2),
             'passRates' => $this->settings(3),

@@ -16,7 +16,7 @@ class ResultController extends Controller
     public function showResult($id)
     {
         $this->result = ExamAttempt::where([['user_id', Auth::id()], ['exam_id', $id], ['status', 1]])->first();
-        $this->exam = Exam::find($id)->first();
+        $this->exam = Exam::find($id);
         $this->id = ExamAnswer::where([['user_id', Auth::id()], ['exam_id', $id]])->pluck('exam_question_id')->toArray();
         $this->questions = ExamQuestion::where('exam_id', $id)->whereIn('id', $this->id)->get();
         return view('subscriber.show-result', ['exam' => $this->exam, 'result' => $this->result, 'questions' => $this->questions]);
@@ -33,7 +33,8 @@ class ResultController extends Controller
                         'B' => $examQuestion->choice_two,
                         'C' => $examQuestion->choice_three,
                         'D' => $examQuestion->choice_four,
-                    ]
+                    ],
+                    'explanation' => $examQuestion->explanation,
                 ];
             })
             ->addIndexColumn()

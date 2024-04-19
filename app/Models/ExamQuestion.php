@@ -40,6 +40,9 @@ class ExamQuestion extends Model
         self::$question->choice_three = $request->choice_three;
         self::$question->choice_four = $request->choice_four;
         self::$question->correct_answer = $request->correct_answer;
+        if ($request->has('explanation')) {
+            self::$question->explanation = $request->explanation;
+        }
         self::$question->save();
     }
 

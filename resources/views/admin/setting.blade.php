@@ -175,7 +175,7 @@
                 }
             });
         }
-        /*$(document).ready(function () {
+/*        $(document).ready(function () {
         $.ajax({
             url: "{{--{{ route('admin.setting') }}--}}",
             success: function(data) {
@@ -284,8 +284,8 @@
                     toastr.error('Something went wrong', 'System Alert!');
                 }
             });
-        });*/
-/*       $(document).ready(function () {
+        });
+     $(document).ready(function () {
         const table = $('#table1').DataTable({
             processing: true,
             serverSide: true,

@@ -19,9 +19,16 @@
                                     <div class="col-3">
                                         <label for="global">For All</label>
                                     </div>
-                                    <div class="col-9">
+                                    <div class="col-2">
                                         <input type="checkbox" name="global" id="global" value="1" class="form-check" {{ $exam->global == 1 ? 'checked' : '' }}/>
-                                        <span id="titleError" class="text-danger"></span>
+                                        <span id="globalError" class="text-danger"></span>
+                                    </div>
+                                    <div class="col-5">
+                                        <label for="publish">Auto Publish Result</label>
+                                    </div>
+                                    <div class="col-2">
+                                        <input type="checkbox" name="publish" id="publish" value="1" class="form-check" {{ $exam->publish == 1 ? 'checked' : '' }}/>
+                                        <span id="publishError" class="text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="row p-2">
@@ -39,9 +46,14 @@
                                     </div>
                                     <div class="col-12">
                                         <select name="course" id="course" class="form-select" aria-label="Course select">
-                                            <option selected disabled>Select Course</option>
+                                            <option disabled>Select Course</option>
                                             @foreach($courses as $course)
-                                                <option value="{{ $course->id }}" {{ $course->id == $exam->course_id ? 'selected' : '' }}>{{ $course->name }}</option>
+                                                @if($userCourseId == $course->id)
+                                                    <option value="{{ $course->id }}" selected>{{ $course->name }}</option>
+                                                @else
+                                                    <option value="{{ $course->id }}" disabled>{{ $course->name }}</option>
+                                                @endif
+                                                {{--<option value="{{ $course->id }}" {{ $course->id == $exam->course_id ? 'selected' : '' }}>{{ $course->name }}</option>--}}
                                             @endforeach
                                         </select>
                                         <span id="courseError" class="text-danger"></span>
@@ -224,6 +236,15 @@
                                                        </div>
                                                        <div class="row p-2">
                                                            <div class="col-12">
+                                                               <label for="explanation">Explanation&nbsp;<span class="text-muted">(*Optional)</span></label>
+                                                           </div>
+                                                           <div class="col-12">
+                                                                <textarea id="explanation" class="form-control" name="explanation" rows="3"></textarea>
+                                                               <span id="explanationError" class="text-danger"></span>
+                                                           </div>
+                                                       </div>
+                                                       <div class="row p-2">
+                                                           <div class="col-12">
                                                                <div class="float-end">
                                                                    <button type="button" class="btn btn-secondary rounded-0" data-bs-dismiss="modal">Close</button>
                                                                    <button type="submit" id="btnSave" class="btn btn-primary rounded-0">Save</button>
@@ -253,6 +274,7 @@
 @endsection
 @section('script')
     <script type="text/javascript">
+        //Responsible for show questions on right side
         let url = "{{ route('creator.question.set', ':id') }}";
         url = url.replace(":id", $("#examId").val());
         let count = $("#question-count");
@@ -275,12 +297,18 @@
                         $.each(data.choice, function (key, value) {
                             question += `<span class="pl-4 ${value === data.correct ? "text-success" : ""}">${key}&nbsp;-&nbsp;${value}</span><br>`;
                         });
+                        if (data.explanation === null) {
+                            question += `<br><span class="text-muted">No details found.</span>`;
+                        } else {
+                            question += `<br>${data.explanation}`;
+                        }
                         return question;
                     }
                 },
                 { data: "action" },
             ],
         });
+        //Responsible for update exam panel information on left side
         $("#panelForm").on("submit", function (e){
             e.preventDefault();
             let formData = new FormData(this);
@@ -310,6 +338,7 @@
                 }
             });
         });
+        //Remove error alert after correct data input
         function removeError() {
             $('#idError').text("");
             $('#questionError').text("");
@@ -318,13 +347,16 @@
             $('#choice_twoError').text("");
             $('#choice_threeError').text("");
             $('#choice_fourError').text("");
+            $('#explanationError').text("");
         }
+        //Show modal for create question
         $("#addQuestion").on("click", function () {
             removeError();
             $("#question-id").removeAttr("value");
             $("#questionForm").trigger("reset");
             $("#questionAction").modal("show");
         });
+        //Show update modal and fetch data on modal box
         function updateQuestion(id) {
             removeError();
             let url = "{{ route('creator.question.show', ':id') }}";
@@ -349,6 +381,7 @@
                     $("#choice-two").val(response.choice_two);
                     $("#choice-three").val(response.choice_three);
                     $("#choice-four").val(response.choice_four);
+                    $("#explanation").val(response.explanation);
                     one.val(response.choice_one);
                     two.val(response.choice_two);
                     three.val(response.choice_three);
@@ -368,6 +401,7 @@
                 }
             });
         }
+        //Delete question
         function deleteQuestion(id) {
             let url = "{{ route('creator.question.distroy', ':id') }}";
             url = url.replace(":id", id);
@@ -393,6 +427,7 @@
                 });
             }
         }
+        //Put input value on each radio input for the reason of getting correct answer before submission
         $("#choice-one, #choice-two, #choice-three, #choice-four").on("keydown, keyup", function () {
             let a = $('#choice-one').val();
             let b = $('#choice-two').val();
@@ -403,6 +438,7 @@
             $('#option-three').val(c);
             $('#option-four').val(d);
         });
+        //Responsible for submit data of create & update operation
         $("#questionForm").on("submit", function (e){
             e.preventDefault();
             $.ajax({
@@ -423,6 +459,7 @@
                         toastr.success(response.success, "CONGRATULATION");
                         if (Object.hasOwn(response, "cr")) {
                             count.text(parseInt(count.text())+1);
+                            $("#questionForm").trigger("reset");
                         } else {
                             $("#questionAction").modal("hide");
                         }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AssignCourse;
 use App\Models\Exam;
 use App\Models\ExamQuestion;
 use App\Models\SettingProperty;
@@ -14,15 +15,18 @@ use App\Rules\Uncommon;
 class ManageExamController extends Controller
 {
     public $validCheck, $questions, $exam;
-
+    //Configuration for getting setting property like, time limits, negative marks, passing rate
     public function settingProperty($id)
     {
         return SettingProperty::where('setting_id', $id)->pluck('id')->toArray();
     }
+    //Responsible for update exam panel
     public function update(Request $request, $id)
     {
         $this->validCheck = Validator::make($request->all(), [
-            'course' => 'required|exists:courses,id',
+            'global' => 'boolean',
+            'publish' => 'boolean',
+            'course' => 'required|exists:courses,id|in:'.AssignCourse::where('user_id', Auth::id())->first()->course_id,
             'time_limit' => 'required|in:'.implode(",", $this->settingProperty(1)),
             'negative_mark' => 'required|in:'.implode(",", $this->settingProperty(2)),
             'passing_rate' => 'required|in:'.implode(",", $this->settingProperty(3)),
@@ -35,7 +39,7 @@ class ManageExamController extends Controller
         }
         return response()->json(['invalid' => $this->validCheck->errors()]);
     }
-
+    //Responsible for create and update question
     public function createQuestion(Request $request)
     {
         $this->validCheck = Validator::make($request->all(), [
@@ -45,6 +49,7 @@ class ManageExamController extends Controller
             'choice_two' => 'required|different:choice_one|different:choice_three|different:choice_four',
             'choice_three' => 'required|different:choice_one|different:choice_two|different:choice_four',
             'choice_four' => 'required|different:choice_one|different:choice_two|different:choice_three',
+            'explanation' => 'string|nullable|max:100',
             'correct_answer' => 'required|in:'.implode(",", [
                 $request->choice_one,
                 $request->choice_two,
@@ -69,12 +74,13 @@ class ManageExamController extends Controller
         }
         return response()->json(['invalid' => $this->validCheck->errors()]);
     }
-
+    //Fetching data to update modal box
     public function showUpdateQuestion($id)
     {
         $this->questions = ExamQuestion::find($id);
         return response()->json($this->questions);
     }
+    //Responsible for showing questions for right side
     public function questionSet($id)
     {
         return DataTables::of(ExamQuestion::where('exam_id', $id)->orderBy('id', 'desc')->get())
@@ -88,12 +94,14 @@ class ManageExamController extends Controller
                         'B' => $examQuestion->choice_two,
                         'C' => $examQuestion->choice_three,
                         'D' => $examQuestion->choice_four,
-                    ]
+                    ],
+                    'explanation' => $examQuestion->explanation,
                 ];
             })
             ->addIndexColumn()
             ->make(true);
     }
+    //Delete question
     public function distroy($id)
     {
         ExamQuestion::find($id)->delete();

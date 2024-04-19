@@ -43,9 +43,16 @@
                                             <div class="col-3">
                                                 <label for="global">For All</label>
                                             </div>
-                                            <div class="col-9">
+                                            <div class="col-2">
                                                 <input type="checkbox" name="global" id="global" value="1" class="form-check"/>
-                                                <span id="titleError" class="text-danger"></span>
+                                                <span id="globalError" class="text-danger"></span>
+                                            </div>
+                                            <div class="col-5">
+                                                <label for="publish">Auto Publish Result</label>
+                                            </div>
+                                            <div class="col-2">
+                                                <input type="checkbox" name="publish" id="publish" value="1" class="form-check" checked/>
+                                                <span id="publishError" class="text-danger"></span>
                                             </div>
                                         </div>
                                         <div class="row p-2">
@@ -63,9 +70,13 @@
                                             </div>
                                             <div class="col-9">
                                                 <select name="course" id="course" class="form-select" aria-label="Course select">
-                                                    <option selected disabled>Select Course</option>
+                                                    <option disabled>Select Course</option>
                                                     @foreach($courses as $course)
-                                                        <option value="{{ $course->id }}">{{ $course->name }}</option>
+                                                        @if($userCourseId == $course->id)
+                                                            <option value="{{ $course->id }}" selected>{{ $course->name }}</option>
+                                                        @else
+                                                            <option value="{{ $course->id }}" disabled>{{ $course->name }}</option>
+                                                        @endif
                                                     @endforeach
                                                 </select>
                                                 <span id="courseError" class="text-danger"></span>

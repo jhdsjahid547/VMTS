@@ -4,6 +4,7 @@
 @section('body')
     <section class="pt-2">
         <div class="container-fluid">
+            @if($exam->publish == 1)
             @if(!empty($result->exam_id))
             <input id="routeUrl" type="hidden" value="{{ $result->exam_id }}">
             <div class="row">
@@ -176,6 +177,13 @@
                     </div>
                 </div>
             @endif
+            @else
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3 class="text-center text-danger">Result not publish yet!</h3>
+                    </div>
+                </div>
+            @endif
             <div id="footer-fix"></div>
         </div>
     </section>
@@ -208,6 +216,11 @@
                         $.each(data.choice, function (key, value) {
                             question += `<span class="pl-4 ${value === data.correct ? "text-success" : ""}">${key}&nbsp;-&nbsp;${value}&nbsp;${value === data.correct ? "~correct" : ""}</span><br>`;
                         });
+                        if (data.explanation === null) {
+                            question += `<br><span class="text-muted">No details found.</span>`;
+                        } else {
+                            question += `<br>${data.explanation}`;
+                        }
                         return question;
                     }
                 },
